@@ -5,6 +5,7 @@ import math
 class knn_classifier:
     classes = []
     matrix = {}
+    updated_spot = []
 
     def __init__(self, test):
         self.classes = self.find_classes(test)
@@ -36,7 +37,6 @@ class knn_classifier:
         map_data = {}
         for list_test in test_lists:
             distances.clear()
-            map_data.clear()
             for list_training in training_lists:
                 distance = knn_classifier.dist(list_test, list_training)
                 distances.append(distance)
@@ -46,7 +46,25 @@ class knn_classifier:
             distances.sort()
 
             cluster_name = self.find_cluster(distances, map_data, number_neighbours)
+            if list_test[4] != cluster_name:
+                list_test[4] = cluster_name
+                print(*list_test)
+                self.updated_spot.append(list_test)
+            else:
+                self.updated_spot.append(list_test)
+
             self.update_matrix(cluster_name, list_test[4])
+        knn_classifier.update_csv_training(self.updated_spot, training_lists)
+
+    @staticmethod
+    def update_csv_training(updated_spots, training_data):
+        with open('top.csv', mode='w') as writer:
+            position_writer = csv.writer(writer,delimiter=',')
+            for row in updated_spots:
+                        position_writer.writerow(row)
+            for row in training_data:
+                position_writer.writerow(row)
+            writer.close()
 
     def find_cluster(self, distances, map_data, number_neighbours):
         if number_neighbours == 1:

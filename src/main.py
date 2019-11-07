@@ -16,6 +16,5 @@ def main():
     k.analyse(test, training, number_of_neighbours)
     k.show_matrix()
 
-
 if __name__ == '__main__':
     main()
